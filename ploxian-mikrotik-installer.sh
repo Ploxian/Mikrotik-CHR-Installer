@@ -155,19 +155,11 @@ main() {
   info "Default gateway: $GATEWAY"
 
   info "Writing CHR image to /dev/$DISK (this will erase all data)..."
-  dd if="$CHR_IMG" of="/dev/$DISK" bs=4M status=progress oflag=sync
-
-  sync
-  success "CHR image successfully written to /dev/$DISK."
-
-  read -p "Do you want to reboot now into MikroTik RouterOS? (yes/no): " REBOOT
-  if [[ "$REBOOT" == "yes" ]]; then
-    info "Rebooting system..."
-    echo 1 > /proc/sys/kernel/sysrq
-    echo b > /proc/sysrq-trigger
-  else
-    info "Reboot skipped. Please reboot manually to boot into CHR."
-  fi
+  dd if="$CHR_IMG" of="/dev/$DISK" bs=4M status=progress oflag=sync && \
+  success "CHR image successfully written to /dev/$DISK." && \
+  info "Rebooting system..." && \
+  echo 1 > /proc/sys/kernel/sysrq && \
+  echo b > /proc/sysrq-trigger && \
 }
 
 # Run main function
