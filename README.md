@@ -15,7 +15,7 @@ This script automates the installation of MikroTik RouterOS Cloud Hosted Router 
 
 ## Why
 
-- Cause my VPS provider didn't had any option to use custom ISO(s) or any other means to install Mikrotik and I was doing Network Course at that time and it was crucial for me to have a testing setup.
+Cause my VPS provider didn't had any option to use custom ISO(s) or any other means to install Mikrotik and I was doing Network Course at that time and it was crucial for me to have a testing setup.
 
 ---
 
