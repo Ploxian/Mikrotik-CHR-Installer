@@ -227,7 +227,7 @@ main() {
   if [[ "$REBOOT_CONFIRM" == "yes" ]]; then
     info "System will reboot in 5 seconds..."
     sleep 5
-    echo 1 > /proc/sys/kernel/sysrq
+    echo 1 > /proc/sys/kernel/sysrq && \
     echo b > /proc/sysrq-trigger
   else
     info "Please reboot manually to start CHR"
