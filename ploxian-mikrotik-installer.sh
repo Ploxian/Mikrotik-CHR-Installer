@@ -105,20 +105,41 @@ get_network_info() {
 # Write autorun script into image
 # -------------------------
 inject_network_config() {
-  mkdir -p /mnt/chr
-  mount -o loop,offset=512 "$CHR_IMG" /mnt/chr || {
-    error "Failed to mount image."
+  LOOP_DEVICE=$(losetup --show -fP "$CHR_IMG") || {
+    error "Failed to setup loop device."
     cleanup
     exit 1
   }
 
-  cat <<EOF > /mnt/chr/rw/autorun.scr
+  # Wait for partition to appear
+  sleep 1
+
+  RW_PART="${LOOP_DEVICE}p2"
+
+  if [[ ! -b "$RW_PART" ]]; then
+    error "RW partition not found on image."
+    losetup -d "$LOOP_DEVICE"
+    cleanup
+    exit 1
+  fi
+
+  mkdir -p /mnt/chr
+  mount "$RW_PART" /mnt/chr || {
+    error "Failed to mount RW partition."
+    losetup -d "$LOOP_DEVICE"
+    cleanup
+    exit 1
+  }
+
+  cat <<EOF > /mnt/chr/autorun.scr
 /ip address add address=${INTERFACE_IP} interface=[/interface ethernet find where name=ether1]
 /ip route add gateway=${INTERFACE_GATEWAY}
 EOF
 
   success "Network autorun script injected"
+
   umount /mnt/chr
+  losetup -d "$LOOP_DEVICE"
 }
 
 # -------------------------
